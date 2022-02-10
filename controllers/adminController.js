@@ -1,8 +1,11 @@
-const productModel = require("../models/productModel");
-const usersModel = require("../models/usersModel");
+const productModel = require("../models/productSchema");
+const usersModel = require("../models/usersSchema");
 const catagoriesModel = require("../models/catagoriesSchema");
 const cartstModel = require("../models/cartsSchema");
 const ordersModel = require("../models/ordersSchema");
+const productCodeModel = require("../models/productCodesSchema");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 exports.getListOrder = async function (req, res) {
   try {
@@ -43,6 +46,67 @@ exports.UpdateOrderinlist = async function (req, res) {
       }
     );
     res.json(updateOrder);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.createCatagories = async function (req, res) {
+  try {
+    let { catagoriesName } = req.body;
+    let searchcata = await catagoriesModel.findOne({ catagoriesName });
+    if (searchcata) {
+      res.json("da co phan loai nay");
+    } else {
+      let newCatagories = await catagoriesModel.create({
+        catagoriesName: catagoriesName,
+      });
+      res.json("tao moi thanh cong ", newCatagories);
+    }
+  } catch (error) {
+    res.json(error);
+  }
+};
+
+exports.updateCatagories = async function (req, res) {
+  try {
+    let updateCata = await catagoriesModel.updateOne(
+      { _id: req.body.idcata },
+      {
+        catagoriesName: req.body.catagoriesName,
+      }
+    );
+    res.json(updateCata);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.deleteCatagories = async function (req, res) {
+  try {
+    let deleteCata = await catagoriesModel.deleteOne({ _id: req.body.idCata });
+    req.json(deleteCata);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.createProduct = async function (req, res) {
+  try {
+    let index = req.file.path.indexOf("assets");
+    let link = "/pub/" + req.file.path.slice(index, req.file.path.length);
+    let newProduct = await productModel.create({
+      idCatagories: req.body.idCatagories,
+      productName: req.body.productName,
+      productCode: req.body.productCode,
+      ListImg: link,
+      price: req.body.price,
+      quality: req.body.quality,
+      description: req.body.description,
+      color: req.body.color,
+      size: req.body.size,
+      createDate: new Date(),
+    });
+    res.json(newProduct);
   } catch (error) {
     console.log(error);
   }

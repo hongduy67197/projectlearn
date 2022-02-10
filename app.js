@@ -4,9 +4,11 @@ const app = express();
 const port = 3050;
 const Router = require("./routes");
 app.get("*", (req, res) => {
-    res.send("<h1>Invalid URL</h1>");
-  });
+  res.send("<h1>Invalid URL</h1>");
+});
 
-app.listen(port, ()=>{
-    console.log(`Server listern in localhost: ${port}`);
+app.use("/pub", express.static(path.join(__dirname, "./views")));
+app.use("/", Router);
+app.listen(port, () => {
+  console.log(`Server listern in localhost: ${port}`);
 });
