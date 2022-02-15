@@ -20,10 +20,16 @@ app.get('/categories', function(req, res) {
 
 //
 const Router = require("./routes");
-app.get("*", (req, res) => {
-    res.send("<h1>Invalid URL</h1>");
-  });
+app.use(express.urlencoded({ extended: false }));
 
-app.listen(port, ()=>{
-    console.log(`Server listern in localhost: ${port}`);
+// parse application/json
+app.use(express.json());
+app.get("*", (req, res) => {
+  res.send("<h1>Invalid URL</h1>");
+});
+
+app.use("/pub", express.static(path.join(__dirname, "./views")));
+app.use("/", Router);
+app.listen(port, () => {
+  console.log(`Server listern in localhost: ${port}`);
 });

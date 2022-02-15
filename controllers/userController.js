@@ -4,20 +4,31 @@ const catagoriesModel = require("../models/catagoriesSchema");
 const cartsModel = require("../models/cartsSchema");
 const ordersModel = require("../models/ordersSchema");
 const usersModel = require("../models/usersSchema");
-
+const { hashPassword, comparePassword } = require("../services/auth");
+const { generateCode, sendEmail } = require("../utils/utils");
+const { CodeCheck } = require("../utils/utils");
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 exports.register = async function (req, res) {
   try {
     const { username, password, email } = req.body;
 
-    const alreadyExistUser = await usersModel.findOne({ username: username });
+    const alreadyExistUser = await usersModel.findOne({ username });
+    const alreadyExistEmail = await usersModel.findOne({ email });
 
     if (alreadyExistUser) {
       return res.status(400).json({ status: "username da co" });
-    }
-    const alreadyExistEmail = await usersModel.findOne({ email: email });
-
-    if (alreadyExistEmail) {
+    } else if (alreadyExistEmail) {
       return res.status(400).json({ status: "email da co" });
+    } else {
+      const hashed = await hashPassword(password);
+      const newUser = await usersModel.create({
+        username,
+        password: hashed,
+      });
+      const newCart = await cartsModel.create({
+        iduser: newUser._id,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -37,7 +48,7 @@ exports.getList = async function (req, res) {
     //   .populate("listProducts.idproduct");
     // let userid = await usersModel.find();
     // let listproduct = await productModel.find({});
-    let cart = await cartstModel
+    let cart = await cartsModel
       .find({ _id: cartId })
       .populate("listProducts.idproduct");
     // console.log(cart.listProducts);
@@ -58,45 +69,6 @@ exports.getList = async function (req, res) {
   }
 };
 
-exports.createCatagories = async function (req, res) {
-  try {
-    let { catagoriesName } = req.body;
-    let searchcata = await catagoriesModel.findOne({ catagoriesName });
-    if (searchcata) {
-      res.json("da co phan loai nay");
-    } else {
-      let newCatagories = await catagoriesModel.create({
-        catagoriesName: catagoriesName,
-      });
-      res.json("tao moi thanh cong ", newCatagories);
-    }
-  } catch (error) {
-    res.json(error);
-  }
-};
-
-exports.updateCatagories = async function (req, res) {
-  try {
-    let updateCata = await catagoriesModel.updateOne(
-      { _id: req.body.idcata },
-      {
-        catagoriesName: req.body.catagoriesName,
-      }
-    );
-    res.json(updateCata);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-exports.deleteCatagories = async function (req, res) {
-  try {
-    let deleteCata = await catagoriesModel.deleteOne({ _id: req.body.idCata });
-    req.json(deleteCata);
-  } catch (error) {
-    console.log(error);
-  }
-};
 exports.getListOrderUser = async function (req, res) {
   try {
     let listOrder = await ordersModel
@@ -110,7 +82,7 @@ exports.getListOrderUser = async function (req, res) {
 
 exports.createorder = async function (req, res) {
   try {
-    let listsp = await cartstModel.find({ iduser: req.body.iduser });
+    let listsp = await cartsModel.find({ iduser: req.body.iduser });
     console.log(70, listsp[0].listProducts);
     let a;
     a = listsp[0].listProducts;
@@ -137,7 +109,7 @@ exports.createorder = async function (req, res) {
       );
     }
     console.log(123, olderQuality);
-    let clearCartUser = await cartstModel.updateOne(
+    let clearCartUser = await cartsModel.updateOne(
       {
         iduser: req.body.iduser,
       },
@@ -153,7 +125,7 @@ exports.updatecart = async function (req, res) {
   try {
     let idproductes = req.body.idproductes;
     let quantity = req.body.quantity;
-    let searchproduct = await cartstModel.findOne({
+    let searchproduct = await cartsModel.findOne({
       _id: req.query.cartId,
     });
 
@@ -169,7 +141,7 @@ exports.updatecart = async function (req, res) {
       // let newQuantity = oldquantity * 1 + quantity * 1;
       let newQuantity = quantity;
       console.log(87, newQuantity);
-      let updatecartquantity = await cartstModel.updateOne(
+      let updatecartquantity = await cartsModel.updateOne(
         { _id: req.query.cartId, "listProducts.idproduct": idproductes },
         { $set: { "listProducts.$.quantity": newQuantity } }
         // $. trong "listProducts.$.quantity" su dung de truy van den "listProducts.idproduct"
@@ -178,7 +150,7 @@ exports.updatecart = async function (req, res) {
     } else {
       console.log(101, "else");
 
-      let fixcartes = await cartstModel.updateOne(
+      let fixcartes = await cartsModel.updateOne(
         { _id: req.query.cartId },
         {
           cartsPrice: req.body.cartsPrice,
@@ -198,7 +170,7 @@ exports.updatecart = async function (req, res) {
 };
 
 exports.updatecarqua = function (req, res) {
-  cartstModel
+  cartsModel
     .updateOne(
       { _id: req.query.cartId, "listProducts.idproduct": req.body.idproduct },
       {
@@ -210,7 +182,7 @@ exports.updatecarqua = function (req, res) {
       }
     )
     .then(() => {
-      cartstModel
+      cartsModel
         .updateOne(
           {
             _id: req.query.cartId,
@@ -240,7 +212,7 @@ exports.updatecarqua = function (req, res) {
 
 exports.deletacard = async function (req, res) {
   try {
-    let detecard = await cartstModel.updateOne(
+    let detecard = await cartsModel.updateOne(
       { _id: req.query.cartId, "listProducts.idproduct": req.body.idproduct },
       {
         $pull: {
@@ -261,7 +233,7 @@ exports.getidcard = async function (req, res) {
   try {
     let userid = req.params.userid;
 
-    let cardid = await cartstModel.find({ iduser: userid });
+    let cardid = await cartsModel.find({ iduser: userid });
     // console.log(cardid);
     res.json(cardid[0]._id);
   } catch (error) {

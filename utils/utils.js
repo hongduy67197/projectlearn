@@ -1,101 +1,69 @@
-// const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 
-// async function sendEmail() {
-//   //   let testAccount = await nodemailer.createTestAccount();
+class CodeCheck {
+  constructor(code) {
+    this.code = code;
+  }
+  getCode() {
+    return this.code;
+  }
+  setCode(code) {
+    this.code = code;
+  }
+}
 
-//   let Transport = nodemailer.createTransport({
-//     service: "gmail",
-//     auth: {
-//       user: "destinyoblivion97@gmail.com",
-//       pass: "Anxiety16092020",
-//     },
-//   });
-//   let mailOptions = {
-//     from: `destinyoblivion97@gmail.com`,
-//     to: "hongduy67197@gmail.com",
-//     subject: "Test Nodemailer",
-//     text: "Hello world",
-//     html: "<b>Have a nice day</b>",
-//   };
-//   Transport.sendMail(mailOptions, function (err, info) {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log("Message sent");
-//       resizeBy.json(200);
-//     }
-//   });
-// }
+function generateCode() {
+  return Math.random().toString().substring(2, 8);
+}
 
-// module.exports = sendEmail;
+// async..await is not allowed in global scope, must use a wrapper
+async function sendEmail(id, email, codeCheck, mode) {
+  //   let testAccount = await nodemailer.createTestAccount();
 
-// part2
-// const nodemailer = require("nodemailer");
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "destinyoblivion97@gmail.com",
+      pass: "Anxiety16092020", // naturally, replace both with your real credentials or an application-specific password
+    },
+  });
 
-// // async..await is not allowed in global scope, must use a wrapper
-// async function sendEmail() {
-//   // Generate test SMTP service account from ethereal.email
-//   // Only needed if you don't have a real mail account for testing
-//   let testAccount = await nodemailer.createTestAccount();
+  let info = await transporter.sendMail(
+    {
+      from: "destinyoblivion97@gmail.com", // sender address
+      to: "hongduy67197@gmail.com", // list of receivers
+      subject: "Hello ✔", // Subject line
+      text: "Hello world?", // plain text body
+      html: "<b>Hello world?</b>", // html body
+    },
+    function (err, res) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Message sent successfully");
+      }
+    }
+  );
 
-//   // create reusable transporter object using the default SMTP transport
-//   const transporter = nodemailer.createTransport({
-//     service: "gmail",
-//     auth: {
-//       user: "destinyoblivion97@gmail.com",
-//       pass: "Anxiety16092020", // naturally, replace both with your real credentials or an application-specific password
-//     },
-//   });
+  // let info = await transporter.sendMail(
+  //   {
+  //     from: "projectlearn", // sender address
+  //     to: email, // list of receivers
+  //     subject: "Hello ✔", // Subject line
+  //     text: "Email registered successfully", // plain text body
+  //     html: `<a href=http://localhost:8000/user/${id}/${email}/${codeCheck}>click here to complete register</a>`, // html body
+  //   },
+  //   function (err, res) {
+  //     if (err) {
+  //       console.log(err);
+  //     } else {
+  //       console.log("Message sent successfully");
+  //     }
+  //   }
+  // );
+}
 
-//   // send mail with defined transport object
-//   let info = await transporter.sendMail({
-//     from: "destinyoblivion97@gmail.com", // sender address
-//     to: "hongduy67197@gmail.com", // list of receivers
-//     subject: "Hello ✔", // Subject line
-//     text: "Hello world?", // plain text body
-//     html: "<b>Hello world?</b>", // html body
-//   });
+//ham goi den function mainsendEmail()
+// mainsendEmail().catch(console.error);
 
-//   console.log("Message sent: %s", info.messageId);
-//   // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-//   // Preview only available when sending through an Ethereal account
-//   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
-//   // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-// }
-
-// sendEmail().catch(console.error);
-
-// part3
-// const express = require("express");
-// const router = express.Router();
-// var nodemailer = require("nodemailer"); // khai báo sử dụng module nodemailer
-// router.post("/send", function (req, res, next) {
-//   var transporter = nodemailer.createTransport({
-//     // config mail server
-//     service: "Gmail",
-//     auth: {
-//       user: "destinyoblivion97@gmail.com",
-//       pass: "Anxiety16092020",
-//     },
-//   });
-//   var mainOptions = {
-//     // thiết lập đối tượng, nội dung gửi mail
-//     from: "Thanh Batmon",
-//     to: "hongduy67197@gmail.com",
-//     subject: "Test Nodemailer",
-//     text: "Hello world? ",
-//     html: "<b>Hello world?</b>",
-//   };
-//   transporter.sendMail(mainOptions, function (err, info) {
-//     if (err) {
-//       console.log(err);
-//       res.redirect("/");
-//     } else {
-//       console.log("Message sent: " + info.response);
-//       res.redirect("/");
-//     }
-//   });
-// });
-
-// module.exports = router;
+module.exports = { sendEmail, CodeCheck, generateCode };

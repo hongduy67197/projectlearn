@@ -1,7 +1,11 @@
 const router = require("express").Router();
 
-const sendEmail = require("../utils/utils");
+// const utils = require("../utils/utils");
+// console.log(utils.mainsendEmail());
 
-// router.get("/testsendmail", function (req, res) {
-//   sendEmail;
-// });
+const adminROuter = require("./adminrouter");
+const usersRouter = require("./usersrouter");
+router.use("/admin", adminROuter);
+router.use("/user", usersRouter);
+
+module.exports = router;

@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/testproject", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
 });
 // mongoose.connect("mongodb://localhost/k12nodemy_project", {
 //   useNewUrlParser: true,
