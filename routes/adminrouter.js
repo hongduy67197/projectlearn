@@ -18,12 +18,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 // order
 router.get("/listOrder", adminController.getListOrder);
-router.put("/updateOrder", adminController.UpdateOrderinlist);
+router.put("/updateOrder/:idorder", adminController.UpdateOrderinlist);
 // catagories
-router.put("/updatecata", adminController.updateCatagories);
-router.post("/createcata", adminController.createCatagories);
-router.delete("/deletecata", adminController.deleteCatagories);
+router.post("/catagories", adminController.createCatagories);
+router.put("/catagories/:idcatagories", adminController.updateCatagories);
+router.delete("/catagories/:idCatagories", adminController.deleteCatagories);
 // product
-router.post("/profile", upload.single("img"), adminController.createProduct);
+router.get("/searchproduct", adminController.searchProduct);
+router.post("/product", upload.single("img"), adminController.createProduct);
+// prettier-ignore
+router.put("/product/:idProduct", upload.single("img"), adminController.updateProduct);
+router.delete("/product/:idProduct", adminController.deleteProduct);
 
 module.exports = router;

@@ -4,20 +4,31 @@ const catagoriesModel = require("../models/catagoriesSchema");
 const cartsModel = require("../models/cartsSchema");
 const ordersModel = require("../models/ordersSchema");
 const usersModel = require("../models/usersSchema");
-
+const { hashPassword, comparePassword } = require("../services/auth");
+const { generateCode, sendEmail } = require("../utils/utils");
+const { CodeCheck } = require("../utils/utils");
+const nodemailer = require("nodemailer");
+const jwt = require("jsonwebtoken");
 exports.register = async function (req, res) {
   try {
     const { username, password, email } = req.body;
 
-    const alreadyExistUser = await usersModel.findOne({ username: username });
+    const alreadyExistUser = await usersModel.findOne({ username });
+    const alreadyExistEmail = await usersModel.findOne({ email });
 
     if (alreadyExistUser) {
       return res.status(400).json({ status: "username da co" });
-    }
-    const alreadyExistEmail = await usersModel.findOne({ email: email });
-
-    if (alreadyExistEmail) {
+    } else if (alreadyExistEmail) {
       return res.status(400).json({ status: "email da co" });
+    } else {
+      const hashed = await hashPassword(password);
+      const newUser = await usersModel.create({
+        username,
+        password: hashed,
+      });
+      const newCart = await cartsModel.create({
+        iduser: newUser._id,
+      });
     }
   } catch (error) {
     console.log(error);

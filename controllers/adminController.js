@@ -70,7 +70,7 @@ exports.createCatagories = async function (req, res) {
 exports.updateCatagories = async function (req, res) {
   try {
     let updateCata = await catagoriesModel.updateOne(
-      { _id: req.body.idcata },
+      { _id: req.params.idcatagories },
       {
         catagoriesName: req.body.catagoriesName,
       }
@@ -83,13 +83,25 @@ exports.updateCatagories = async function (req, res) {
 
 exports.deleteCatagories = async function (req, res) {
   try {
-    let deleteCata = await catagoriesModel.deleteOne({ _id: req.body.idCata });
+    let deleteCata = await catagoriesModel.deleteOne({
+      _id: req.params.idCatagories,
+    });
     req.json(deleteCata);
   } catch (error) {
     console.log(error);
   }
 };
 
+exports.searchProduct = async function (req, res) {
+  try {
+    let searchProductList = await productModel.find({
+      productName: { $regex: `.*${req.query.search}*` },
+    });
+    res.json(searchProductList);
+  } catch (error) {
+    console.log(error);
+  }
+};
 exports.createProduct = async function (req, res) {
   try {
     let index = req.file.path.indexOf("assets");
@@ -107,6 +119,41 @@ exports.createProduct = async function (req, res) {
       createDate: new Date(),
     });
     res.json(newProduct);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.updateProduct = async function (req, res) {
+  try {
+    let index = req.file.path.indexOf("assets");
+    let newlink = "/pub/" + req.file.path.slice(index, req.file.path.length);
+    let fixProduct = await productModel.updateOne(
+      { _id: req.params.idProduct },
+      {
+        idCatagories: req.body.idCatagories,
+        productName: req.body.productName,
+        productCode: req.body.productCode,
+        ListImg: newlink,
+        price: req.body.price,
+        quality: req.body.quality,
+        description: req.body.description,
+        color: req.body.color,
+        size: req.body.size,
+      }
+    );
+    res.json(fixProduct);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.deleteProduct = async function (req, res) {
+  try {
+    let disProduct = await productModel.deleteOne({
+      _id: req.params.idProduct,
+    });
+    res.json(disProduct);
   } catch (error) {
     console.log(error);
   }

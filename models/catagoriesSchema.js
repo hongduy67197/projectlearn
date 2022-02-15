@@ -9,3 +9,7 @@ const catagoriesSchema = mongoose.Schema(
 let catagoriesModel = mongoose.model("catagories", catagoriesSchema);
 
 module.exports = catagoriesModel;
+
+// catagoriesModel.create({
+//   catagoriesName: "test123",
+// });

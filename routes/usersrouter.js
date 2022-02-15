@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/userController");
 
+// user
+router.post("/register", userController.register);
 // cart
 router.get("/cart", userController.getList);
 router.put("/cart/fix", userController.updatecarqua);
