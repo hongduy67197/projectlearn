@@ -11,19 +11,20 @@ const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 exports.register = async function (req, res) {
   try {
-    const { username, password, email } = req.body;
+    const { password, email } = req.body;
 
-    const alreadyExistUser = await usersModel.findOne({ username });
+    // const alreadyExistUser = await usersModel.findOne({ username });
     const alreadyExistEmail = await usersModel.findOne({ email });
 
-    if (alreadyExistUser) {
-      return res.status(400).json({ status: "username da co" });
-    } else if (alreadyExistEmail) {
+    // if (alreadyExistUser) {
+    //   return res.status(400).json({ status: "username da co" });
+    // } else
+    if (alreadyExistEmail) {
       return res.status(400).json({ status: "email da co" });
     } else {
       const hashed = await hashPassword(password);
       const newUser = await usersModel.create({
-        username,
+        // username,
         password: hashed,
       });
       const newCart = await cartsModel.create({
