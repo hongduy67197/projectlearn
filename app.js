@@ -2,7 +2,6 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const port = 3050;
-// thêm ejs
 
 // sign in
 app.get('/signin', function(req, res) {
