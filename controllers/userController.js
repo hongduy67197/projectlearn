@@ -7,29 +7,68 @@ const usersModel = require("../models/usersSchema");
 const { hashPassword, comparePassword } = require("../services/auth");
 const { generateCode, sendEmail } = require("../utils/utils");
 const { CodeCheck } = require("../utils/utils");
+const codeCheck = new CodeCheck();
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 exports.register = async function (req, res) {
   try {
-    const { username, password, email } = req.body;
+    const { password, email } = req.body;
 
-    const alreadyExistUser = await usersModel.findOne({ username });
+    // const alreadyExistUser = await usersModel.findOne({ username });
     const alreadyExistEmail = await usersModel.findOne({ email });
 
-    if (alreadyExistUser) {
-      return res.status(400).json({ status: "username da co" });
-    } else if (alreadyExistEmail) {
+    // if (alreadyExistUser) {
+    //   return res.status(400).json({ status: "username da co" });
+    // } else
+    if (alreadyExistEmail) {
       return res.status(400).json({ status: "email da co" });
     } else {
       const hashed = await hashPassword(password);
       const newUser = await usersModel.create({
-        username,
+        // username,
         password: hashed,
       });
       const newCart = await cartsModel.create({
         iduser: newUser._id,
       });
+      codeCheck.setCode(generateCode());
+      await sendEmail(newUser._id, email, codeCheck.getCode());
+      newUser.code = codeCheck.getCode();
+      await newUser.save();
+      res.status(200).json({ message: "check email" });
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { email, code } = req.params;
+    const user = await usersModel.findOne({ code }).catch((err) => {
+      console.log(err);
+    });
+    user.email = email;
+    user.code = null;
+    await user.save();
+
+    return res.status(200).send("Dang ky thanh cong");
+  } catch (e) {
+    return res.status(400).send({ message: e });
+  }
+};
+
+exports.editUserInfor = async function (req, res) {
+  try {
+    let userEdit = await usersModel.updateOne(
+      { _id: req.params.idUser },
+      {
+        username: req.body.username,
+        phone: req.body.phone,
+        sex: req.body.sex,
+        address: req.body.address,
+      }
+    );
+    res.json(userEdit);
   } catch (error) {
     console.log(error);
   }
