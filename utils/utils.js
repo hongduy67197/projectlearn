@@ -17,7 +17,7 @@ function generateCode() {
 }
 
 // async..await is not allowed in global scope, must use a wrapper
-async function sendEmail(id, email, codeCheck, mode) {
+async function sendEmail(id, email, codeCheck) {
   //   let testAccount = await nodemailer.createTestAccount();
 
   const transporter = nodemailer.createTransport({
@@ -28,30 +28,13 @@ async function sendEmail(id, email, codeCheck, mode) {
     },
   });
 
-  let info = await transporter.sendMail(
-    {
-      from: "destinyoblivion97@gmail.com", // sender address
-      to: "hongduy67197@gmail.com", // list of receivers
-      subject: "Hello ✔", // Subject line
-      text: "Hello world?", // plain text body
-      html: "<b>Hello world?</b>", // html body
-    },
-    function (err, res) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Message sent successfully");
-      }
-    }
-  );
-
   // let info = await transporter.sendMail(
   //   {
-  //     from: "projectlearn", // sender address
-  //     to: email, // list of receivers
+  //     from: "destinyoblivion97@gmail.com", // sender address
+  //     to: "hongduy67197@gmail.com", // list of receivers
   //     subject: "Hello ✔", // Subject line
-  //     text: "Email registered successfully", // plain text body
-  //     html: `<a href=http://localhost:8000/user/${id}/${email}/${codeCheck}>click here to complete register</a>`, // html body
+  //     text: "Hello world?", // plain text body
+  //     html: "<b>Hello world?</b>", // html body
   //   },
   //   function (err, res) {
   //     if (err) {
@@ -61,6 +44,23 @@ async function sendEmail(id, email, codeCheck, mode) {
   //     }
   //   }
   // );
+
+  let info = await transporter.sendMail(
+    {
+      from: "projectlearn", // sender address
+      to: email, // list of receivers
+      subject: "Hello ✔", // Subject line
+      text: "Email registered successfully", // plain text body
+      html: `<a href=http://localhost:3050/user/${email}/${codeCheck}>click here to complete register</a>`, // html body
+    },
+    function (err, res) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Message sent successfully");
+      }
+    }
+  );
 }
 
 //ham goi den function mainsendEmail()

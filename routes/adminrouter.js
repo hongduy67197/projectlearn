@@ -16,6 +16,9 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+// user
+router.get("/user", adminController.getListUser);
+router.delete("/user/:idUser", adminController.deleteUser);
 // order
 router.get("/listOrder", adminController.getListOrder);
 router.put("/updateOrder/:idorder", adminController.UpdateOrderinlist);

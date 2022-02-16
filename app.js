@@ -8,11 +8,11 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use("/pub", express.static(path.join(__dirname, "./views")));
 // parse application/json
+
+app.use("/", Router);
 app.get("*", (req, res) => {
   res.send("<h1>Invalid URL</h1>");
 });
-
-app.use("/", Router);
 app.listen(port, () => {
   console.log(`Server listern in localhost: ${port}`);
 });

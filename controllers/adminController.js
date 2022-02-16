@@ -158,3 +158,23 @@ exports.deleteProduct = async function (req, res) {
     console.log(error);
   }
 };
+
+exports.getListUser = async function (req, res) {
+  try {
+    let listUser = await usersModel.find();
+    res.json(listUser);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.deleteUser = async function (req, res) {
+  try {
+    let deleteUserInfor = await usersModel.deleteOne({
+      _id: req.params.idUser,
+    });
+    res.json(deleteUserInfor);
+  } catch (error) {
+    console.log(error);
+  }
+};
