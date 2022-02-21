@@ -14,23 +14,47 @@ const storage = multer.diskStorage({
     );
   },
 });
-
+const { checkRoleUser } = require("../middleware/auth");
 const upload = multer({ storage: storage });
 // user
-router.get("/user", adminController.getListUser);
+router.get("/user", checkRoleUser, adminController.getListUser);
+router.post("/login", adminController.login);
 router.delete("/user/:idUser", adminController.deleteUser);
 // order
-router.get("/listOrder", adminController.getListOrder);
-router.put("/updateOrder/:idorder", adminController.UpdateOrderinlist);
+router.get("/listOrder", checkRoleUser, adminController.getListOrder);
+router.put(
+  "/updateOrder/:idorder",
+  checkRoleUser,
+  adminController.UpdateOrderinlist
+);
 // catagories
-router.post("/catagories", adminController.createCatagories);
-router.put("/catagories/:idcatagories", adminController.updateCatagories);
-router.delete("/catagories/:idCatagories", adminController.deleteCatagories);
+router.post("/catagories", checkRoleUser, adminController.createCatagories);
+router.put(
+  "/catagories/:idcatagories",
+  checkRoleUser,
+  adminController.updateCatagories
+);
+router.delete(
+  "/catagories/:idCatagories",
+  checkRoleUser,
+  adminController.deleteCatagories
+);
 // product
-router.get("/searchproduct", adminController.searchProduct);
-router.post("/product", upload.single("img"), adminController.createProduct);
+router.get("/searchproduct", checkRoleUser, adminController.searchProduct);
 // prettier-ignore
-router.put("/product/:idProduct", upload.single("img"), adminController.updateProduct);
-router.delete("/product/:idProduct", adminController.deleteProduct);
+router.post("/productandcode", upload.single("img"), checkRoleUser, adminController.createProductandProductCOde);
+router.post(
+  "/product",
+  upload.single("img"),
+  checkRoleUser,
+  adminController.createProduct
+);
+// prettier-ignore
+router.put("/product/:idProduct", upload.single("img"), checkRoleUser, adminController.updateProduct);
+router.delete(
+  "/product/:idProduct",
+  checkRoleUser,
+  adminController.deleteProduct
+);
 
 module.exports = router;

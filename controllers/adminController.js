@@ -6,7 +6,7 @@ const ordersModel = require("../models/ordersSchema");
 const productCodeModel = require("../models/productCodesSchema");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
-
+const { comparePassword } = require("../services/auth");
 exports.getListOrder = async function (req, res) {
   try {
     let listAllOrder = await ordersModel
@@ -29,9 +29,9 @@ exports.getListOrder = async function (req, res) {
       },
     ];
 
-    res.render("list-order-admin.ejs", { listAllOrder, listStatus });
+    // res.render("list-order-admin.ejs", { listAllOrder, listStatus });
     // console.log(listAllOrder[0].iduser[0].username);
-    // res.json(listAllOrder);
+    res.json(listAllOrder);
   } catch (error) {
     console.log(error);
   }
@@ -102,6 +102,32 @@ exports.searchProduct = async function (req, res) {
     console.log(error);
   }
 };
+
+exports.createProductandProductCOde = async function (req, res) {
+  try {
+    let index = req.file.path.indexOf("assets");
+    let link = "/pub/" + req.file.path.slice(index, req.file.path.length);
+    let newProductCode = await productCodeModel.create({
+      productCode: req.body.productCode,
+    });
+    let newProduct = await productModel.create({
+      idCatagories: req.body.idCatagories,
+      productName: req.body.productName,
+      productCode: newProductCode.productCode,
+      ListImg: link,
+      price: req.body.price,
+      quality: req.body.quality,
+      info: req.body.info,
+      description: req.body.description,
+      color: req.body.color,
+      size: req.body.size,
+      createDate: new Date(),
+    });
+    res.json(newProduct);
+  } catch (error) {
+    console.log(error);
+  }
+};
 exports.createProduct = async function (req, res) {
   try {
     let index = req.file.path.indexOf("assets");
@@ -159,6 +185,30 @@ exports.deleteProduct = async function (req, res) {
   }
 };
 
+exports.login = async function (req, res) {
+  try {
+    const { email, password } = req.body;
+    const user = await usersModel.findOne({ email });
+    const matchPassword = await comparePassword(password, user.password);
+    if (!user) {
+      return res.json({ status: "user or password undifind" });
+    } else if (!user.email) {
+      return res.json({ status: "tai khoan chua kich hoat email" });
+    } else if (!matchPassword) {
+      return res.json({ status: " password khong thay" });
+    } else {
+      let token = jwt.sign({ id: user._id }, "projectlearn");
+      if (user.role == "admin") {
+        res.cookie("user", token, { expires: new Date(Date.now() + 900000) });
+        res.json({ data: { token: token, role: user.role }, mess: "oke" });
+      } else {
+        res.json({ mess: "khong co quyen" });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 exports.getListUser = async function (req, res) {
   try {
     let listUser = await usersModel.find();

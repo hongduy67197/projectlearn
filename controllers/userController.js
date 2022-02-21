@@ -57,6 +57,26 @@ exports.verifyEmail = async (req, res) => {
   }
 };
 
+exports.login = async function (req, res) {
+  try {
+    const { email, password } = req.body;
+    const user = await usersModel.findOne({ email });
+    const matchPassword = await comparePassword(password, user.password);
+    if (!user) {
+      return res.json({ status: "user or password undifind" });
+    } else if (!user.email) {
+      return res.json({ status: "tai khoan chua kich hoat email" });
+    } else if (!matchPassword) {
+      return res.json({ status: " password khong thay" });
+    } else {
+      let token = jwt.sign({ id: user._id }, "projectlearn");
+      res.cookie("user", token, { expires: new Date(Date.now() + 900000) });
+      res.json({ data: { token: token, role: user.role }, mess: "oke" });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 exports.editUserInfor = async function (req, res) {
   try {
     let userEdit = await usersModel.updateOne(
@@ -99,9 +119,9 @@ exports.getList = async function (req, res) {
       // listproduct: listproduct,
       // iduser: userid,
     };
-    // res.json(listData);
+    res.json(listData);
     console.log(25, cart[0]);
-    res.render("cart.ejs", listData);
+    // res.render("cart.ejs", listData);
   } catch (error) {
     console.log(error);
     res.json(error);
