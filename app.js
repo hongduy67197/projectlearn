@@ -2,13 +2,23 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const port = 3050;
+const Router = require("./routes");
+
 app.use("/pub", express.static(path.join(__dirname, "./views")));
 app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 // sign in
 app.get('/signin', function(req, res) {
   res.render('signin');
 });
 // sign up
+// Cart
+app.get('/cart', function(req, res) {
+  res.render('cart');
+});
+//
+
 app.get('/signup', function(req, res) {
   res.render('signup');
 });
@@ -29,11 +39,8 @@ app.get('/contact', function(req, res) {
   res.render('contact');
 });
 //
-const Router = require("./routes");
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.set("view engine", "ejs");
-app.use("/pub", express.static(path.join(__dirname, "./views")));
+
+
 // parse application/json
 
 app.use("/", Router);
