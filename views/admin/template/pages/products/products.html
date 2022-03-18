@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Product</title>
     <!-- plugins:css -->
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
     <link rel="stylesheet" href="../../assets/vendors/mdi/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="../../assets/vendors/flag-icon-css/css/flag-icon.min.css">
@@ -19,6 +20,7 @@
     <link rel="stylesheet" href="../../assets/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="../../assets/images/favicon.png" />
+  
   </head>
   <body>
     <div class="container-scroller">
@@ -377,7 +379,8 @@
                         <div class="modol-1">
                           <button type="button" class="btn btn-primary btn-1" data-toggle="modal" data-target="#staticBackdrop">
                           Add Product
-                          </button>   
+                          </button>
+                        </div>   
                         <!-- Modal -->
                             <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                           <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -474,12 +477,13 @@
                           <th> Create Date </th>
                           <th></th>
                           <th></th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td class="py-1">
-                           mã 1
+                          <td class="py-1 pdCode">
+                           111
                           </td>
                           <td> thông tin 2 </td>
                           <td>
@@ -495,16 +499,106 @@
                             <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon">
                               <i class="mdi mdi-border-color"></i>
                             </button>
-                          </td>
+                          </td>                         
                           <td>
                             <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon">
                               <i class="mdi mdi-delete"></i>
                             </button>
                           </td>
+                            <td>
+                              <!-- Button trigger modal -->
+                          <button type="button" class="btn btn-outline-secondary btn-rounded btn-icon" data-toggle="modal" data-target="#staticBackdrop">
+                          <i class="mdi mdi-comment-plus-outline"></i>
+                          </button>
+                      
+                        <!-- Modal -->
+                            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Add Products</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <div class="col-12 grid-margin stretch-card">
+                                  <div class="card">
+                                    <div class="card-body">
+                                      <h4 class="card-title">Add Products</h4>
+                                      <form class="forms-sample">
+                                        <div class="form-group">
+                                          <label for="exampleInputName1">Products Name</label>
+                                          <input type="text" class="form-control" id="exampleInputName1" placeholder="Products Name">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="exampleSelectGender">Product Code</label>
+                                          <select class="form-control" id="exampleSelectGender">
+                                            <option>111</option>
+                                            <option>222</option>
+                                            <option>333</option>
+                                          </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="exampleInputEmail3">Quantily</label>
+                                          <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Quanlity">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="exampleInputEmail3">Price</label>
+                                          <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Price">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="exampleInputEmail3">Description</label>
+                                          <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Description">
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="exampleInputEmail3">Color</label>
+                                          <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Color">
+                                        </div>                                        
+                                        <div class="form-group">
+                                          <label for="exampleSelectGender">Size</label>
+                                          <select class="form-control" id="exampleSelectGender">
+                                            <option>M</option>
+                                            <option>L</option>
+                                            <option>S</option>
+                                            <option>X</option>
+                                            <option>XL</option>
+                                          </select>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="exampleInputEmail3">Color</label>
+                                          <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Color">
+                                        </div>
+                                        <div class="form-group">
+                                          <label>File upload</label>
+                                          <input type="file" name="img[]" class="file-upload-default">
+                                          <div class="input-group col-xs-12">
+                                            <input type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                            <span class="input-group-append">
+                                              <button class="file-upload-browse btn btn-primary" type="button">Upload</button>
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary me-2">Submit</button>
+                                        <button class="btn btn-light">Cancel</button>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Create</button>
+                              </div>
+                            </div>
+                            </div>
+                        </div> 
+                          </td>
+                          
                         </tr>
                         <tr>
                             <td class="py-1">
-                             mã 1
+                              111
                             </td>
                             <td> thông tin 2 </td>
                             <td>
@@ -529,7 +623,7 @@
                           </tr>
                           <tr>
                             <td class="py-1">
-                             mã 1
+                             222
                             </td>
                             <td> thông tin 2 </td>
                             <td>
@@ -554,7 +648,7 @@
                           </tr>
                           <tr>
                             <td class="py-1">
-                             mã 1
+                             222
                             </td>
                             <td> thông tin 2 </td>
                             <td>
@@ -579,7 +673,7 @@
                           </tr>
                           <tr>
                             <td class="py-1">
-                             mã 1
+                             222
                             </td>
                             <td> thông tin 2 </td>
                             <td>
@@ -604,7 +698,7 @@
                           </tr>
                           <tr>
                             <td class="py-1">
-                             mã 1
+                             222
                             </td>
                             <td> thông tin 2 </td>
                             <td>
@@ -629,7 +723,7 @@
                           </tr>
                           <tr>
                             <td class="py-1">
-                             mã 1
+                             333
                             </td>
                             <td> thông tin 2 </td>
                             <td>
